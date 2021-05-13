@@ -6,7 +6,7 @@
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sp94.github.io/Peacock.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sp94.github.io/Peacock.jl/dev)
-[![Coverage Status](https://coveralls.io/repos/github/sp94/Peacock.jl/badge.svg?branch=master)](https://coveralls.io/github/sp94/Peacock.jl?branch=master)
+[![codecov](https://codecov.io/gh/sp94/Peacock.jl/branch/master/graph/badge.svg?token=HQ9MQCEPZT)](https://codecov.io/gh/sp94/Peacock.jl)
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.02678/status.svg)](https://doi.org/10.21105/joss.02678)
 
 ## Introduction
@@ -31,17 +31,23 @@ Solve for...
 * GPU support
 * TODO: CPU parallel support
 
-
 Focused on ease of use
 * [Install](https://sp94.github.io/Peacock.jl/dev/tutorials/getting_started/#getting_started_installation-1) with one line in Julia's package manager
 * Simple visualisation of [geometry](https://sp94.github.io/Peacock.jl/dev/tutorials/getting_started/#getting_started_geometry-1), [fields](https://sp94.github.io/Peacock.jl/dev/tutorials/getting_started/#getting_started_modes-1), and [fully labelled band diagrams](https://sp94.github.io/Peacock.jl/dev/tutorials/getting_started/#getting_started_bands-1)
 * Reproduce and extend existing photonic crystals in the [`Peacock.Zoo`](https://sp94.github.io/Peacock.jl/dev/how-tos/zoo/#how_to_zoo-1) submodule
+* Easily [accelerate calculations on CUDA-compatible GPUs](https://sp94.github.io/Peacock.jl/dev/how-tos/gpu/)
 
 
 ## Limitations
 
 * Currently only implemented for 2D photonic crystals
 * Like all methods that solve Maxwell's equations in Fourier space, the Plane Wave Expansion Method converges slowly for high contrast materials such as metals (ϵ < 0)
+
+
+## Contributors
+
+* @sp94 (core)
+* @kabume (GPU support)
 
 
 ## Referencing
