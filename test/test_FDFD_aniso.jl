@@ -1,8 +1,8 @@
 using Arpack,SparseArrays
 using Peacock
 using PyPlot
-include("../src/diff_yee2.jl")
-include("../src/solve_fdm.jl")
+include("src/diff_yee2.jl")
+include("src/solve_fdm.jl")
 
 # build geometry
 TE = true 
