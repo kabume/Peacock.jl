@@ -118,25 +118,14 @@ ky = vcat(ky1[1:end], ky2[2:end], ky3[2:end - 1], ky1[1])
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
 ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
-
-#f = zeros(ComplexF64,N_eig,length(ks))
-f = zeros(ComplexF64,N_eig,length(kx))
-dx = dy = 1/size(eps2.epszz)[1]*2
-
-for j = 1:length(ks)
-    global f
-    #kinc = [kx[j] ky[j]]
-    kinc = ks[j]
-    WF, f[:,j] = solve_fdm(dx,dy,f0,eps2,mu2,N_eig,TE,kinc) 
+function my_solve(k)
+    modes = Peacock.FDFD.solve(solver_FDFD,k,Peacock.FDFD.TE,bands=1:2)
+    return [mode.frequency for mode in modes]
 end
 
-f = zeros(ComplexF64,N_eig,length(kx))
-dx = dy = 1/size(eps2.epszz)[1]*2
-
-for j = 1:length(kx)
-    global f
-    kinc = [kx[j] ky[j]]
-    WF, f[:,j] = solve_fdm(dx,dy,f0,eps2,mu2,N_eig,TE,kinc) 
+f = zeros(ComplexF64,2,length(ks))
+for i = 1:length(ks)
+    f[:,i] = my_solve(ks[i])[1:2]
 end
 
 figure()

@@ -71,9 +71,9 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Polari
     end
 
     freqs_squared, modes_data = try
-        eigs(LHS, RHS, nev =bands[end])
+        eigs(LHS, RHS, nev =bands[end], sigma = (2*pi*0.1)^2)
     catch
-        eigs(RHS \ LHS, nev = bands[end])
+        eigs(RHS \ LHS, nev = bands[end], sigma = (2*pi*0.1)^2)
     end
 
     freqs = sqrt.(freqs_squared)
