@@ -30,4 +30,6 @@ export plot_wilson_loop_winding
 # Submodule that defines my commonly used crystals
 include("Zoo.jl")
 
+include("FDFD.jl")
+
 end # module

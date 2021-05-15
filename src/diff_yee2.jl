@@ -7,6 +7,8 @@
 - `kinc`: [kx ky] incident wave vector. This argument is only needed for periodic boundaries.
 Position on the grid: m = (ny - 1)*Nx + nx
 """
+
+#TODO kinc -> k::AbstractVecOrMat{<:Real}
 function diff_yee2(NGRID::Matrix{Float64}, RES::Matrix{Float64}, BC::Matrix{Int64}, kinc=nothing)
     if kinc != nothing
         kinc0 = kinc
