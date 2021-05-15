@@ -1,17 +1,14 @@
-using Arpack,SparseArrays
 using Peacock
 using PyPlot
-include("src/diff_yee2.jl")
-include("src/solve_fdm.jl")
 
+Polarisation = Peacock.FDFD.TE
 # build geometry
-TE = true 
 eps0 = 1; mu0 = 1
 #mu1 = [1 0 0; 0 1 0; 0 0 1]
-#eps1 = [8.9 0 0; 0 8.9 0; 0 0 8.9]
-mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 15]
-eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
-if TE == true
+eps1 = [15 0 0; 0 15 0; 0 0 15]
+mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 1]
+#eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
+if Polarisation == Peacock.FDFD.TE
     eps1 = inv(eps1)
 else
     mu1 = inv(mu1)
@@ -118,14 +115,17 @@ ky = vcat(ky1[1:end], ky2[2:end], ky3[2:end - 1], ky1[1])
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
 ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
+dx = dy = 1/size(eps2.epszz)[1]*2
+solver_FDFD = Peacock.FDFD.Solver(eps2, mu2, dx, dy)
+
 function my_solve(k)
-    modes = Peacock.FDFD.solve(solver_FDFD,k,Peacock.FDFD.TE,bands=1:2)
+    modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)
     return [mode.frequency for mode in modes]
 end
 
-f = zeros(ComplexF64,2,length(ks))
+f = zeros(ComplexF64,N_eig,length(ks))
 for i = 1:length(ks)
-    f[:,i] = my_solve(ks[i])[1:2]
+    f[:,i] = my_solve(ks[i])[1:N_eig]/2/pi
 end
 
 figure()
