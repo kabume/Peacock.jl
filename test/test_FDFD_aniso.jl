@@ -16,20 +16,6 @@ if TE == true
 else
     mu1 = inv(mu1)
 end
-struct Mu
-    muxx::Matrix{ComplexF64}
-    muyy::Matrix{ComplexF64}
-    muzz::Matrix{ComplexF64}
-    muxy::Matrix{ComplexF64}
-    muyx::Matrix{ComplexF64}
-end
-struct Eps
-    epsxx::Matrix{ComplexF64}
-    epsyy::Matrix{ComplexF64}
-    epszz::Matrix{ComplexF64}
-    epsxy::Matrix{ComplexF64}
-    epsyx::Matrix{ComplexF64}
-end
 
 r0 = 0.11
 function epfxx(x, y)
@@ -108,8 +94,8 @@ geometry = Geometry(epfxy, mufxy, a1, a2, d1, d2); muxy = geometry.mu; epsxy = g
 geometry = Geometry(epfyx, mufyx, a1, a2, d1, d2); muyx = geometry.mu; epsyx = geometry.ep
 
 size(epszz)
-mu2 = Mu(muxx, muyy, muzz, muxy, muyx)
-eps2 = Eps(epsxx, epsyy, epszz, epsxy, epsyx)
+mu2 = Peacock.FDFD.Mu(muxx, muyy, muzz, muxy, muyx)
+eps2 = Peacock.FDFD.Eps(epsxx, epsyy, epszz, epsxy, epsyx)
 
 # creat ks by hand
 a = Px = Py = 1

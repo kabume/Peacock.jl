@@ -15,6 +15,6 @@ export Mode, HilbertSpace, get_field
 include("utils.jl")
 
 include("solve_fdm.jl")
-export Solver, TE, TM, solve
+export Solver, TE, TM, solve, Eps, Mu
 
 end

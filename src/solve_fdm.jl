@@ -1,10 +1,24 @@
 @enum Polarisation TE TM
 
-struct Solver{T}
-    eps2::T
-    mu2::T
-    dx::T
-    dy::T
+struct Mu
+    muxx::Matrix{ComplexF64}
+    muyy::Matrix{ComplexF64}
+    muzz::Matrix{ComplexF64}
+    muxy::Matrix{ComplexF64}
+    muyx::Matrix{ComplexF64}
+end
+struct Eps
+    epsxx::Matrix{ComplexF64}
+    epsyy::Matrix{ComplexF64}
+    epszz::Matrix{ComplexF64}
+    epsxy::Matrix{ComplexF64}
+    epsyx::Matrix{ComplexF64}
+end
+struct Solver
+    eps2::Eps
+    mu2::Mu
+    dx::Float64
+    dy::Float64
 end
 
 function Solver(geometry::Geometry, resolution::Matrix{Float64}; GPU=false)
