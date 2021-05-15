@@ -12,6 +12,13 @@ struct Mode
     label::String
 end
 
+struct Mode_FDFD
+    k0::Vector{Float64}
+    frequency::ComplexF64
+    data::Vector{ComplexF64}
+    label::String
+end
+
 """
     HilbertSpace(k0, data, weighting, basis)
 
@@ -33,6 +40,9 @@ struct HilbertSpace
     end
 end
 
+function get_field_FDFD()
+    #TODO
+end
 
 """
     HilbertSpace(modes::Array{Mode,1})
