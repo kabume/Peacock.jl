@@ -5,6 +5,9 @@ using Arpack, SparseArrays
 include("geometry.jl")
 export Geometry
 
+include("plane_wave_basis.jl")
+export BrillouinZoneCoordinate
+
 include("modes.jl")
 export Mode, HilbertSpace, get_field
 
