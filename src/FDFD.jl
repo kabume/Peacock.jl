@@ -1,6 +1,7 @@
 module FDFD
 
 using Arpack, SparseArrays
+using LaTeXStrings
 
 include("geometry.jl")
 export Geometry
