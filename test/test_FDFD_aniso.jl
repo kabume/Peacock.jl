@@ -94,20 +94,6 @@ size(epszz)
 mu2 = Peacock.FDFD.Mu(muxx, muyy, muzz, muxy, muyx)
 eps2 = Peacock.FDFD.Eps(epsxx, epsyy, epszz, epsxy, epsyx)
 
-# creat ks by hand
-a = Px = Py = 1
-N_sam = 10
-f0 = 0.1
-N_eig = 3
-kx1 = range(0.01, pi / Px,length = N_sam)
-ky1 = zeros(N_sam)
-kx2 = ones(N_sam) * pi / Px
-ky2 = range(0, pi / Py, length = N_sam)
-radius = sqrt((pi / Px)^2 + (pi / Py)^2)
-radius_sam = range(radius, 0, length = round(Int64, N_sam * sqrt(2)))
-kx3 = radius_sam * cos(pi / 4)
-ky3 = radius_sam * sin(pi / 4)
-
 kx = vcat(kx1[1:end], kx2[2:end], kx3[2:end - 1], kx1[1])
 ky = vcat(ky1[1:end], ky2[2:end], ky3[2:end - 1], ky1[1])
 
