@@ -82,9 +82,9 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Polari
     freqs = freqs[idx][bands]
     modes_data = modes_data[:,idx][:,bands]
 
-    modes = Mode[]
+    modes = Mode_FDFD[]
     for i in 1:length(freqs)
-        mode = Mode(k, freqs[i], modes_data[:,i], label)
+        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], label)
         push!(modes, mode)
     end
     return modes
