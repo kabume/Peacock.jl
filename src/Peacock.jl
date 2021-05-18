@@ -3,7 +3,6 @@ module Peacock
 using PyPlot
 using LinearAlgebra, FFTW
 using CUDA
-using Arpack, SparseArrays
 
 include("utils.jl")
 export diff_yee2

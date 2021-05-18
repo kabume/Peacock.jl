@@ -1,5 +1,3 @@
-using LaTeXStrings
-using SparseArrays
 struct Solver
     eps2::Eps
     mu2::Mu
