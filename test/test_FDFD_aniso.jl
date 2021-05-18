@@ -1,5 +1,5 @@
 using Peacock
-using PyPlot
+using PyPlot=
 #using Peacock.FDFD
 
 Polarisation = TE
