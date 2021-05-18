@@ -7,13 +7,13 @@ using CUDA
 include("utils.jl")
 
 include("geometry.jl")
-export Geometry
+export Geometry, Mu, Eps, MaterialTensor
 
 include("plane_wave_basis.jl")
 export BrillouinZoneCoordinate
 
 include("modes.jl")
-export Mode, HilbertSpace, get_field
+export Mode, HilbertSpace, get_field, Mode_FDFD, get_field_FDFD
 
 include("solver.jl")
 export Solver, TE, TM, solve

@@ -38,8 +38,8 @@ geometry = Geometry(epf, muf, a1, a2, d1, d2)
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
 ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
-dx = dy = 1/size(eps2.epszz)[1]*2
-solver_FDFD = Peacock.FDFD.Solver(eps2, mu2, dx, dy)
+dx = dy = 1/size(geometry.ep.epsxx)[1]*2
+solver_FDFD = Peacock.FDFD.Solver(geometry, [dx dy])
 #Peacock.FDFD.Solver(geometry::Geometry)
 
 function my_solve(k)
