@@ -1,3 +1,4 @@
+using SparseArrays
 """
     as_to_bs(a1, a2)
 
