@@ -1,3 +1,4 @@
+using LaTeXStrings
 struct Solver
     eps2::Eps
     mu2::Mu
