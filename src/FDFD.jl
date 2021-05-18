@@ -2,6 +2,7 @@ module FDFD
 
 using Arpack, SparseArrays
 using LaTeXStrings
+using LinearAlgebra
 
 include("geometry.jl")
 export Geometry, Mu, Eps, MaterialTensor
