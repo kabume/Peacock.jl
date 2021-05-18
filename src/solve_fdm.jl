@@ -15,7 +15,7 @@ function Solver(geometry::Geometry, resolution::Matrix{Float64}; GPU=false)
 end
 
 
-function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Polarisation; bands=:)
+function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacock.Polarisation; bands=:)
     
     eps2, mu2 = solver.eps2, solver.mu2
     dx, dy = solver.dx, solver.dy
