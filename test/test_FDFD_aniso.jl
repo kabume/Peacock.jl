@@ -2,14 +2,15 @@ using Peacock
 using PyPlot
 using Peacock.FDFD
 
-Polarisation = Peacock.FDFD.TE
+Polarisation = TE
+N_eig = 4
 eps0 = 1; mu0 = 1
 # build geometry
 #mu1 = [1 0 0; 0 1 0; 0 0 1]
 eps1 = [15 0 0; 0 15 0; 0 0 15]
 mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 1]
 #eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
-if Polarisation == Peacock.FDFD.TE
+if Polarisation == TE
     eps1 = inv(eps1)
 else
     mu1 = inv(mu1)

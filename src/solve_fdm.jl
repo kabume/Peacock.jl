@@ -1,4 +1,3 @@
-@enum Polarisation TE TM
 struct Solver
     eps2::Eps
     mu2::Mu
