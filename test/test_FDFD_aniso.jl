@@ -94,15 +94,13 @@ size(epszz)
 mu2 = Peacock.FDFD.Mu(muxx, muyy, muzz, muxy, muyx)
 eps2 = Peacock.FDFD.Eps(epsxx, epsyy, epszz, epsxy, epsyx)
 
-kx = vcat(kx1[1:end], kx2[2:end], kx3[2:end - 1], kx1[1])
-ky = vcat(ky1[1:end], ky2[2:end], ky3[2:end - 1], ky1[1])
-
 #creat ks by Peacock.sample_path
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
 ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
 dx = dy = 1/size(eps2.epszz)[1]*2
 solver_FDFD = Peacock.FDFD.Solver(eps2, mu2, dx, dy)
+#Peacock.FDFD.Solver(geometry::Geometry)
 
 function my_solve(k)
     modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)
@@ -120,3 +118,14 @@ for m = 1:N_eig
 end
 title("Band structure")
 display(gcf())
+
+Nx = Int(size(epszz)[1]/2)
+Ny = Int(size(epszz)[2]/2)
+field_2d = zeros(Nx, Ny)*im
+
+for m = 1:Nx
+    for n = 1:Ny
+        index = Int((n - 1)*Nx + m)
+        field_2d[m, n] = modes[2].data[index]
+    end
+end

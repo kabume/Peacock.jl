@@ -1,37 +1,21 @@
-using Arpack, SparseArrays
 using Peacock
 using PyPlot
-include("src/diff_yee2.jl")
-include("src/solve_fdm.jl")
 
+Polarisation = Peacock.FDFD.TE
+N_eig = 4
 # build geometry
-TE = true 
 eps0 = 1; mu0 = 1
-#mu1 = [1 0 0; 0 1 0; 0 0 1]
-#eps1 = [8.9 0 0; 0 8.9 0; 0 0 8.9]
-mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 15]
-eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
-if TE == true
+mu1 = [14 0 0; 0 14 0; 0 0 14]
+eps1 = [15 0 0; 0 15 0; 0 0 15]
+#mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 15]
+#eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
+if Polarisation == Peacock.FDFD.TE
     eps1 = inv(eps1)
 else
     mu1 = inv(mu1)
 end
-struct Mu
-    muxx::Matrix{ComplexF64}
-    muyy::Matrix{ComplexF64}
-    muzz::Matrix{ComplexF64}
-    muxy::Matrix{ComplexF64}
-    muyx::Matrix{ComplexF64}
-end
-struct Eps
-    epsxx::Matrix{ComplexF64}
-    epsyy::Matrix{ComplexF64}
-    epszz::Matrix{ComplexF64}
-    epsxy::Matrix{ComplexF64}
-    epsyx::Matrix{ComplexF64}
-end
 
-r0 = 0.15; d = 0.35; w = 0; l = 0.05
+r0 = 0.15; d = 0.34; w = 0; l = 0.05
 function epfxx(x, y)
     if (x+d)^2 + (y+d)^2 <= r0^2 || (x-d)^2 + (y-d)^2 <= r0^2 || (x+d)^2 + (y-d)^2 <= r0^2 || (x-d)^2 + (y+d)^2 <= r0^2
         return eps1[1, 1]
@@ -108,49 +92,24 @@ geometry = Geometry(epfxy, mufxy, a1, a2, d1, d2); muxy = geometry.mu; epsxy = g
 geometry = Geometry(epfyx, mufyx, a1, a2, d1, d2); muyx = geometry.mu; epsyx = geometry.ep
 
 size(epszz)
-mu2 = Mu(muxx, muyy, muzz, muxy, muyx)
-eps2 = Eps(epsxx, epsyy, epszz, epsxy, epsyx)
-
-# creat ks by hand
-a = Px = Py = 1
-N_sam = 10
-f0 = 0.1
-N_eig = 3
-kx1 = range(0.01, pi / Px,length = N_sam)
-ky1 = zeros(N_sam)
-kx2 = ones(N_sam) * pi / Px
-ky2 = range(0, pi / Py, length = N_sam)
-radius = sqrt((pi / Px)^2 + (pi / Py)^2)
-radius_sam = range(radius, 0, length = round(Int64, N_sam * sqrt(2)))
-kx3 = radius_sam * cos(pi / 4)
-ky3 = radius_sam * sin(pi / 4)
-
-kx = vcat(kx1[1:end], kx2[2:end], kx3[2:end - 1], kx1[1])
-ky = vcat(ky1[1:end], ky2[2:end], ky3[2:end - 1], ky1[1])
+mu2 = Peacock.FDFD.Mu(muxx, muyy, muzz, muxy, muyx)
+eps2 = Peacock.FDFD.Eps(epsxx, epsyy, epszz, epsxy, epsyx)
 
 #creat ks by Peacock.sample_path
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
 ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
-
-#f = zeros(ComplexF64,N_eig,length(ks))
-f = zeros(ComplexF64,N_eig,length(kx))
 dx = dy = 1/size(eps2.epszz)[1]*2
+solver_FDFD = Peacock.FDFD.Solver(eps2, mu2, dx, dy)
 
-for j = 1:length(ks)
-    global f
-    #kinc = [kx[j] ky[j]]
-    kinc = ks[j]
-    WF, f[:,j] = solve_fdm(dx,dy,f0,eps2,mu2,N_eig,TE,kinc) 
+function my_solve(k)
+    modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)
+    return [mode.frequency for mode in modes]
 end
 
-f = zeros(ComplexF64,N_eig,length(kx))
-dx = dy = 1/size(eps2.epszz)[1]*2
-
-for j = 1:length(kx)
-    global f
-    kinc = [kx[j] ky[j]]
-    WF, f[:,j] = solve_fdm(dx,dy,f0,eps2,mu2,N_eig,TE,kinc) 
+f = zeros(ComplexF64,N_eig,length(ks))
+for i = 1:length(ks)
+    f[:,i] = my_solve(ks[i])[1:N_eig]/2/pi
 end
 
 figure()

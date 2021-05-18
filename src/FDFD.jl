@@ -4,7 +4,7 @@ using Arpack, SparseArrays
 using LaTeXStrings
 
 include("geometry.jl")
-export Geometry
+export Geometry, Mu, Eps, MaterialTensor
 
 include("plane_wave_basis.jl")
 export BrillouinZoneCoordinate
@@ -15,6 +15,6 @@ export Mode_FDFD, get_field_FDFD
 include("utils.jl")
 
 include("solve_fdm.jl")
-export Solver, TE, TM, solve, Eps, Mu
+export Solver, TE, TM, solve
 
 end
