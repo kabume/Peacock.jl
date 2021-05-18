@@ -1,3 +1,7 @@
+using LaTeXStrings
+using SparseArrays
+using Arpack
+
 struct Solver
     eps2::Eps
     mu2::Mu
