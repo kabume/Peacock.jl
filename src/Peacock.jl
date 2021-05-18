@@ -5,6 +5,7 @@ using LinearAlgebra, FFTW
 using CUDA
 
 include("utils.jl")
+export diff_yee2
 
 include("geometry.jl")
 export Geometry, Mu, Eps, MaterialTensor

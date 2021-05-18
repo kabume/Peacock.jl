@@ -1,6 +1,6 @@
 using Peacock
 using PyPlot
-using Peacock.FDFD
+#using Peacock.FDFD
 
 Polarisation = TE
 N_eig = 4
