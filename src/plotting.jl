@@ -81,7 +81,7 @@ end
 function get_field_FDFD(data::AbstractVector{<:Complex}, basis::FDFDBasis; k0 = [0, 0])
     dx, dy = basis.resolution[1], basis.resolution[2]
     a1, a2 = basis.a1, basis.a2
-    Nx, Ny = 1/dx, 1/dy
+    Nx, Ny = Int(1/dx), Int(1/dy)
     out = zeros(ComplexF64, Nx, Ny)
     for m = 1:Nx
         for n = 1:Ny
