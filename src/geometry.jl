@@ -35,6 +35,8 @@ function MaterialTensor(mat::Union{AbstractVecOrMat, AbstractFloat, Int})
 end
 
 function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real)
+    epfT(x, y) = MaterialTensor(epf(x, y))
+    mufT(x, y) = MaterialTensor(muf(x, y))
     P = ceil(Int, norm(a1)/(d1 - 1e-6))
     Q = ceil(Int, norm(a2)/(d2 - 1e-6))
     ps = range(-0.5, stop=0.5, length=P)[1:end-1] #why end-1?
@@ -44,8 +46,8 @@ function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<
     xs = [p*a1[1]+q*a2[1] for p in ps, q in qs]
     ys = [p*a1[2]+q*a2[2] for p in ps, q in qs]
 
-    ep = epf.(xs, ys)
-    mu = muf.(xs, ys)
+    ep = epfT.(xs, ys)
+    mu = mufT.(xs, ys)
     epsij(i, j) = [ep[x, y][i, j] for (x, y) in Iterators.product(1:size(ep)[1], 1:size(ep)[2])]
     muij(i, j) = [mu[x, y][i, j] for (x, y) in Iterators.product(1:size(mu)[1], 1:size(mu)[2])]
     epsxx, epsyy, epszz, epsxy, epsyx = epsij(1, 1), epsij(2, 2), epsij(3, 3), epsij(1, 2), epsij(2, 1)

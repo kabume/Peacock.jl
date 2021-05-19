@@ -2,48 +2,21 @@ using Peacock
 using PyPlot
 #using Peacock.FDFD
 
-Polarisation = TM
-N_eig = 4
-eps0 = 1; mu0 = 1
-# build geometry
-#mu1 = 1
-eps1 = 8.9; mu1 = 1
-#mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 1]
-#eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
-
-r0 = 0.2
-function epf(x, y)
-    if Polarisation == TE
-        if x^2 + y^2 < r0^2
-            return inv(MaterialTensor(eps1))
-        else
-            return inv(MaterialTensor(eps0))
-        end
+# Permittivity
+function epf(x,y)
+    # equation of a circle with radius 0.2a
+    if x^2+y^2 <= 0.2^2
+        # dielectric inside the circle
+        return 8.9
     else
-        if x^2 + y^2 < r0^2
-            return MaterialTensor(eps1)
-        else
-            return MaterialTensor(eps0)
-        end
+        # air outside the circle
+        return 1
     end
 end
 
-#muf(x, y) = MaterialTensor(mu0)
-
-function muf(x, y)
-    if Polarisation == TM
-        if x^2 + y^2 < r0^2
-            return inv(MaterialTensor(mu1))
-        else
-            return inv(MaterialTensor(mu0))
-        end
-    else
-        if x^2 + y^2 < r0^2
-            return MaterialTensor(mu1)
-        else
-            return MaterialTensor(mu0)
-        end
-    end
+# Permeability is unity everywhere
+function muf(x,y)
+    return 1
 end
 
 a1 = [1, 0]  # first lattice vector
@@ -51,60 +24,29 @@ a2 = [0, 1]  # second lattice vector
 
 d1 = 0.005  # resolution along first lattice vector
 d2 = 0.005  # resolution along second lattice vector
-geometry = Geometry(epf, muf, a1, a2, d1, d2,Polarisation)
-
-#creat ks by Peacock.sample_path
-ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
-ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
 G = BrillouinZoneCoordinate(  0,   0, "Γ")
 X = BrillouinZoneCoordinate(1/2,   0, "X")
 M = BrillouinZoneCoordinate(1/2, 1/2, "M")
 ks = [G,X,M,G]
 
-solver_FDFD = Peacock.FDFD.Solver(geometry, [2*d1, 2*d2])
-solver_PWE =  Solver(geometry, 7)
-
 figure(figsize=(4,3))
+geometry_FDFD = Geometry(epf, muf, a1, a2, d1, d2, TE)
+solver_FDFD = Peacock.FDFD.Solver(geometry_FDFD, [2*d1, 2*d2])
 plot_band_diagram(solver_FDFD, ks, TE, color="red",
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
+
+geometry_FDFD = Geometry(epf, muf, a1, a2, d1, d2, TM)
+solver_FDFD = Peacock.FDFD.Solver(geometry_FDFD, [2*d1, 2*d2])
 plot_band_diagram(solver_FDFD, ks, TM, color="blue",
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
 ylim(0,0.8)
 
+geometry_PWE = Geometry(epf, muf, a1, a2, d1, d2)
+solver_PWE =  Solver(geometry_PWE, 7)
 figure(figsize=(4,3))
 plot_band_diagram(solver_PWE, ks, TE, color="red",
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
-plot_band_diagram(solver_PWE, ks, TM, color="red";
+plot_band_diagram(solver_PWE, ks, TM, color="blue";
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
 ylim(0,0.8)
-
-function my_solve(k)
-    modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)
-    return [mode.frequency for mode in modes]
-end
-
-f = zeros(ComplexF64, N_eig, length(ks))
-for i = 1:length(ks)
-    f[:,i] = my_solve(ks[i])[1:N_eig]/2/pi
-end
-
-figure()
-for m = 1:N_eig
-    plot(real.(f[m,:]),"-bo")
-end
-title("Band structure")
-display(gcf())
-
-Nx = Int(size(geometry.ep.epsxx)[1]/2)
-Ny = Int(size(geometry.ep.epsxx)[2]/2)
-field_2d = zeros(Nx, Ny)*im
-k = [0, 0]
-modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)
-
-for m = 1:Nx
-    for n = 1:Ny
-        index = Int((n - 1)*Nx + m)
-        field_2d[m, n] = modes[2].data[index]
-    end
-end
