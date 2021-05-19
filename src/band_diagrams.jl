@@ -106,7 +106,7 @@ function plot_band_diagram(solver::Solver, ks, polarisation::Polarisation, GPU::
     plot_band_diagram(my_solve, ks; dk=dk, labels=labels, bands=bands, frequency_scale=frequency_scale, color=color, markersize=markersize)
 end
 
-function plot_band_diagram(solver::FDFD.Solver, ks, polarisation::Polarisation, GPU::Int;
+function plot_band_diagram(solver::Peacock.FDFD.Solver, ks, polarisation::Polarisation, GPU::Int;
     dk=nothing, labels=[], bands=1:10, frequency_scale=1, color="k", markersize=nothing)
     # Convert BrillouinZoneCoordinate to labelled positions in k space
     if labels == []
@@ -115,7 +115,7 @@ function plot_band_diagram(solver::FDFD.Solver, ks, polarisation::Polarisation, 
     ks = [typeof(x)==BrillouinZoneCoordinate ? get_k(x,solver.basis) : x for x in ks]
     # Wrap all the variables into a single function of k that returns frequencies
     function my_solve(k)
-        modes = FDFD.solve(solver, k, polarisation, bands)
+        modes = Peacock.FDFD.solve(solver, k, polarisation, bands)
         return [mode.frequency for mode in modes]
     end
     # Pass on to more general function
