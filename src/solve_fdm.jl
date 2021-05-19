@@ -9,7 +9,7 @@ struct Solver
     basis::FDFDBasis
 end
 
-function Solver(geometry::Geometry, resolution::Array{Real,1}; GPU=false)
+function Solver(geometry::Geometry, resolution::Array{<:Real,1}; GPU=false)
     basis = FDFDBasis(geometry.a1, geometry.a2, resolution)
     return Solver(geometry.ep, geometry.mu, basis)
 end

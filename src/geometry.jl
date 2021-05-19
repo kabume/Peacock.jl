@@ -14,8 +14,8 @@ struct Eps
 end
 
 struct Geometry
-    a1::Array{Real,1}
-    a2::Array{Real,1}
+    a1::Array{<:Real,1}
+    a2::Array{<:Real,1}
     ep::Eps
     mu::Mu
 end
@@ -32,7 +32,7 @@ function MaterialTensor(mat::Union{AbstractVecOrMat, AbstractFloat, Int})
     end
 end
 
-function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real)
+function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1<:Real, d2<:Real)
     P = ceil(Int, norm(a1)/(d1 - 1e-6))
     Q = ceil(Int, norm(a2)/(d2 - 1e-6))
     ps = range(-0.5, stop=0.5, length=P)[1:end-1] #why end-1?
