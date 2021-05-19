@@ -33,8 +33,8 @@ function MaterialTensor(mat::Union{AbstractVecOrMat, AbstractFloat, Int})
 end
 
 function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real)
-    P = ceil(Int, norm(a1)/d1)
-    Q = ceil(Int, norm(a2)/d2)
+    P = ceil(Int, norm(a1)/(d1 - 1e-6))
+    Q = ceil(Int, norm(a2)/(d2 - 1e-6))
     ps = range(-0.5, stop=0.5, length=P)[1:end-1] #why end-1?
     qs = range(-0.5, stop=0.5, length=Q)[1:end-1]
     ps = ps .+ step(ps)/2 # ensure that p and q are centered on zero

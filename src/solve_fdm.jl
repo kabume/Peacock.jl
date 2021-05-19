@@ -2,30 +2,26 @@ using LaTeXStrings
 using SparseArrays
 using Arpack
 
+
 struct Solver
     eps2::Eps
     mu2::Mu
-    dx::Float64
-    dy::Float64
+    basis::FDFDBasis
 end
 
-function Solver(geometry::Geometry, resolution::Matrix{Float64}; GPU=false)
-    eps2 = geometry.ep
-    mu2 = geometry.mu
-    dx = resolution[1]
-    dy = resolution[2]
-
-    return Solver(eps2, mu2, dx, dy)
+function Solver(geometry::Geometry, resolution::Array{Real,1}; GPU=false)
+    basis = FDFDBasis(geometry.a1, geometry.a2, resolution)
+    return Solver(geometry.ep, geometry.mu, basis)
 end
 
 
 function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacock.Polarisation; bands=:)
     
     eps2, mu2 = solver.eps2, solver.mu2
-    dx, dy = solver.dx, solver.dy
+    dx, dy = solver.basis.resolution[1], solver.basis.resolution[2]
     BC = [-2 -2]
-    Nx2 = size(eps2.epszz)[1]
-    Ny2 = size(eps2.epszz)[2]
+    Nx2 = size(solver.eps2.epszz)[1]
+    Ny2 = size(solver.eps2.epszz)[2]
     DEX, DEY, DHX, DHY = diff_yee2(([Nx2 Ny2]/2), [dx dy], BC, k)
 
     if polarisation == TE
@@ -72,7 +68,7 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
 
     modes = Mode_FDFD[]
     for i in 1:length(freqs)
-        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], label)
+        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], solver.basis, label)
         push!(modes, mode)
     end
     return modes
