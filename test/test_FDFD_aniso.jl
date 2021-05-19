@@ -7,11 +7,11 @@ N_eig = 4
 eps0 = 1; mu0 = 1
 # build geometry
 #mu1 = 1
-eps1 = 15
-mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 15]
+eps1 = 8.9; mu1 = 1
+#mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 1]
 #eps1 = [14 -12.4im 0; 12.4im 14 0; 0 0 15]
 
-r0 = 0.11
+r0 = 0.2
 function epf(x, y)
     if Polarisation == TE
         if x^2 + y^2 < r0^2
