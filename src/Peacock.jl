@@ -22,6 +22,8 @@ export Solver, TE, TM, solve
 include("plotting.jl")
 export plot
 
+include("FDFD.jl")
+
 include("band_diagrams.jl")
 export plot_band_diagram
 
@@ -30,7 +32,5 @@ export plot_wilson_loop_winding
 
 # Submodule that defines my commonly used crystals
 include("Zoo.jl")
-
-include("FDFD.jl")
 
 end # module

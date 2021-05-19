@@ -106,7 +106,7 @@ function plot_band_diagram(solver::Solver, ks, polarisation::Polarisation, GPU::
     plot_band_diagram(my_solve, ks; dk=dk, labels=labels, bands=bands, frequency_scale=frequency_scale, color=color, markersize=markersize)
 end
 
-function plot_band_diagram(solver::Peacock.FDFD.Solver, ks, polarisation::Polarisation, GPU::Int;
+function plot_band_diagram(solver::Peacock.FDFD.Solver, ks, polarisation::Polarisation;
     dk=nothing, labels=[], bands=1:10, frequency_scale=1, color="k", markersize=nothing)
     # Convert BrillouinZoneCoordinate to labelled positions in k space
     if labels == []
