@@ -25,7 +25,7 @@ end
 Approximate the geometry using the given `basis` of plane waves.
 """
 function Solver(geometry::Geometry, basis::PlaneWaveBasis; GPU=false)
-    epc = convmat(geometry.ep.epsxxx, basis)
+    epc = convmat(geometry.ep.epsxx, basis)
     muc = convmat(geometry.mu.muxx, basis)
     Kx = diagm(Complex.(basis.kxs))
     Ky = diagm(Complex.(basis.kys))

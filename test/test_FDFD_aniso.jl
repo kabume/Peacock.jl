@@ -63,6 +63,7 @@ M = BrillouinZoneCoordinate(1/2, 1/2, "M")
 ks = [G,X,M,G]
 
 solver_FDFD = Peacock.FDFD.Solver(geometry, [2*d1, 2*d2])
+solver_PWE =  Solver(geometry, 7)
 
 figure(figsize=(4,3))
 plot_band_diagram(solver_FDFD, ks, TE, color="red",
