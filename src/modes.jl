@@ -12,12 +12,6 @@ struct Mode
     label::String
 end
 
-struct FDFDBasis
-    a1::Array{Real,1}
-    a2::Array{Real,1}
-    resolution::Array{Real,1}
-end
-
 struct Mode_FDFD
     k0::Vector{Float64}
     frequency::ComplexF64

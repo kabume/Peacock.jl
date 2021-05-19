@@ -57,7 +57,19 @@ geometry = Geometry(epf, muf, a1, a2, d1, d2)
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
 ks, _ = Peacock.sample_path(ks, dk=2*pi/19)
 
+G = BrillouinZoneCoordinate(  0,   0, "Γ")
+X = BrillouinZoneCoordinate(1/2,   0, "X")
+M = BrillouinZoneCoordinate(1/2, 1/2, "M")
+ks = [G,X,M,G]
+
 solver_FDFD = Peacock.FDFD.Solver(geometry, [2*d1, 2*d2])
+
+figure(figsize=(4,3))
+plot_band_diagram(solver_FDFD, ks, TE, color="red",
+            bands=1:4, dk=0.1, frequency_scale=1/2pi)
+plot_band_diagram(solver_FDFD, ks, TM, color="blue",
+            bands=1:4, dk=0.1, frequency_scale=1/2pi)
+ylim(0,0.8)
 
 function my_solve(k)
     modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)

@@ -11,10 +11,10 @@ include("geometry.jl")
 export Geometry, Mu, Eps, MaterialTensor
 
 include("plane_wave_basis.jl")
-export BrillouinZoneCoordinate
+export BrillouinZoneCoordinate, FDFDBasis
 
 include("modes.jl")
-export Mode, HilbertSpace, get_field, Mode_FDFD, get_field_FDFD, FDFDBasis
+export Mode, HilbertSpace, get_field, Mode_FDFD, get_field_FDFD
 
 include("solver.jl")
 export Solver, TE, TM, solve

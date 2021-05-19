@@ -112,7 +112,7 @@ function plot_band_diagram(solver::Peacock.FDFD.Solver, ks, polarisation::Polari
     if labels == []
     labels = [hasproperty(x,:label) ? x.label : "" for x in ks]
     end
-    ks = [typeof(x)==BrillouinZoneCoordinate ? get_k(x,solver.basis) : x for x in ks]
+    ks = [typeof(x)==BrillouinZoneCoordinate ? get_k(x,solver.basis) : x for x in ks] 
     # Wrap all the variables into a single function of k that returns frequencies
     function my_solve(k)
         modes = Peacock.FDFD.solve(solver, k, polarisation, bands)

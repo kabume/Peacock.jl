@@ -19,6 +19,11 @@ struct PlaneWaveBasis
     end
 end
 
+struct FDFDBasis
+    a1::Array{Real,1}
+    a2::Array{Real,1}
+    resolution::Array{Real,1}
+end
 
 """
     PlaneWaveBasis(geometry::Geometry, cutoff::Int)
@@ -94,4 +99,9 @@ Return the k-space coordinate of the `BrillouinZoneCoordinate` in a particular
 """
 function get_k(coord::BrillouinZoneCoordinate, basis::PlaneWaveBasis)
     return coord.p*basis.b1 + coord.q*basis.b2
+end
+
+function get_k(coord::BrillouinZoneCoordinate, basis::FDFDBasis)
+    b1, b2 = as_to_bs(basis.a1, basis.a2)
+    return coord.p*b1 + coord.q*b2
 end
