@@ -51,7 +51,7 @@ a2 = [0, 1]  # second lattice vector
 
 d1 = 0.005  # resolution along first lattice vector
 d2 = 0.005  # resolution along second lattice vector
-geometry = Geometry(epf, muf, a1, a2, d1, d2)
+geometry = Geometry(epf, muf, a1, a2, d1, d2,Polarisation)
 
 #creat ks by Peacock.sample_path
 ks = [[[0, 0]]; [[pi, 0]]; [[pi, pi]]; [[2*pi, 2*pi]]]
