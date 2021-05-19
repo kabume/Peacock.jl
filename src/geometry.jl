@@ -64,11 +64,12 @@ end
 
 function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real, polarisation::Polarisation)
     if polarisation == TE
-        epf(x, y) = inv(MaterialTensor(epf(x, y)))
-        muf(x, y) = MaterialTensor(muf(x, y))
+        epfTE(x, y) = inv(MaterialTensor(epf(x, y)))
+        mufTE(x, y) = MaterialTensor(muf(x, y))
+        return Geometry(epfTE, mufTE, a1, a2, d1, d2)
     else
-        epf(x, y) = MaterialTensor(epf(x, y))
-        muf(x, y) = inv(MaterialTensor(muf(x, y)))
+        epfTM(x, y) = MaterialTensor(epf(x, y))
+        mufTM(x, y) = inv(MaterialTensor(muf(x, y)))
+        return Geometry(epfTM, mufTM, a1, a2, d1, d2)
     end
-    return Geometry(epf1, muf1, a1, a2, d1, d2)
 end
