@@ -72,6 +72,13 @@ plot_band_diagram(solver_FDFD, ks, TM, color="blue",
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
 ylim(0,0.8)
 
+figure(figsize=(4,3))
+plot_band_diagram(solver_PWE, ks, TE, color="red",
+            bands=1:4, dk=0.1, frequency_scale=1/2pi)
+plot_band_diagram(solver_PWE, ks, TM, color="blue",0;
+            bands=1:4, dk=0.1, frequency_scale=1/2pi)
+ylim(0,0.8)
+
 function my_solve(k)
     modes = Peacock.FDFD.solve(solver_FDFD,k,Polarisation,bands=1:N_eig)
     return [mode.frequency for mode in modes]
