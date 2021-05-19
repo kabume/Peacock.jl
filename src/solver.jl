@@ -1,7 +1,7 @@
 """
 Transverse electric (TE) or transverse magnetic (TM) polarisation.
 """
-@enum Polarisation TE TM
+#@enum Polarisation TE TM
 
 """
     Solver(basis::PlaneWaveBasis, epc::Matrix{ComplexF64}, muc::Matrix{ComplexF64})

@@ -1,3 +1,5 @@
+@enum Polarisation TE TM
+
 struct Mu
     muxx::Matrix{ComplexF64}
     muyy::Matrix{ComplexF64}
@@ -60,7 +62,7 @@ function Geometry(epf::Function, muf::Function, a1_deg::Real, a2_deg::Real, d1::
     return Geometry(epf, muf, a1, a2, d1, d2)
 end
 
-function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real, polarisation::Peacock.Polarisation)
+function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real, polarisation::Polarisation)
     if polarisation == TE
         epf1(x, y) = inv(MaterialTensor(epf(x, y)))
         muf1(x, y) = MaterialTensor(muf(x, y))
