@@ -59,3 +59,14 @@ function Geometry(epf::Function, muf::Function, a1_deg::Real, a2_deg::Real, d1::
     a2 = [cosd(a2_deg), sind(a2_deg)]
     return Geometry(epf, muf, a1, a2, d1, d2)
 end
+
+function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real, polarisation::Polarisation)
+    if polarisation == TE
+        epf(x, y) = inv(MaterialTensor(epf(x, y)))
+        muf(x, y) = MaterialTensor(muf(x, y))
+    else
+        epf(x, y) = MaterialTensor(epf(x, y))
+        muf(x, y) = inv(MaterialTensor(muf(x, y)))
+    end
+    return Geometry(epf, muf, a1, a2, d1, d2)
+end
