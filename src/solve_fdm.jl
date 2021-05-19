@@ -73,3 +73,8 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
     end
     return modes
 end
+
+function solve(solver::Solver, x::BrillouinZoneCoordinate, polarisation::Polarisation; bands=:)
+    k = get_k(x, solver.basis)
+    return solve(solver, k, polarisation, bands=bands)
+end

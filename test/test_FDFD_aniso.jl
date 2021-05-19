@@ -50,3 +50,5 @@ plot_band_diagram(solver_PWE, ks, TE, color="red",
 plot_band_diagram(solver_PWE, ks, TM, color="blue";
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
 ylim(0,0.8)
+
+modes = Peacock.FDFD.solve(solver_FDFD, X, TM)
