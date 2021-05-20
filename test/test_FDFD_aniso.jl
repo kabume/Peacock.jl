@@ -20,8 +20,8 @@ function muf(x,y)
 end
 
 a1 = [1, 0]  # first lattice vector
-#a2 = [0, 1]  # second lattice vector
-a2 = 0.5*[sqrt(3), 1]
+a2 = [0, 1]  # second lattice vector
+#a2 = 0.5*[sqrt(3), 1]
 
 d1 = 0.005  # resolution along first lattice vector
 d2 = 0.005  # resolution along second lattice vector
@@ -54,6 +54,24 @@ ylim(0,0.8)
 
 modes = Peacock.FDFD.solve(solver_TM, M, TM, bands=1:4)
 
-function epf(x, y)
-    
-end
+angles=[60n for n in 0:5]; ep_bg=1; ep_cyl=11.7
+
+R = 1/2.9; d = 2R/3
+
+epf(x,y) = Peacock.Zoo.wu_ep(x, y, angles, R, d, d, ep_bg, ep_cyl)
+
+muf(x,y)=1
+
+d1 = d2 = 1/500
+
+geometry = Geometry(epf, muf, -60, +60, 1/500, 1/500, TM)
+
+G = BrillouinZoneCoordinate(  0,   0, "Γ")
+M = BrillouinZoneCoordinate(  0, 1/2, "M")
+K = BrillouinZoneCoordinate(1/3, 1/3, "K")
+
+ks = [K,G,M]
+
+solver = Peacock.FDFD.Solver(geometry, [2*d1, 2*d2])
+
+plot_band_diagram(solver, ks, TM, color="red",bands=1:4, dk=0.4, frequency_scale=1/2pi)
