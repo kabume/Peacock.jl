@@ -66,7 +66,7 @@ end
 
 function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real, polarisation::Polarisation)
     u1, u2, u3 = vcat(a1, 0)', vcat(a2, 0)', [0, 0, 1]'
-    g=[u1*u1' -u1*u2' u1*u3';-u2*u1' u2*u2' u2*u3';u3*u1' u3*u2' u3*u3']
+    g=[u1*u1' u1*u2' u1*u3';u2*u1' u2*u2' u2*u3';u3*u1' u3*u2' u3*u3']
     Area = abs(u1*cross(u2', u3'))
     if polarisation == TE
         epfTE(x, y) = inv(MaterialTensor(epf(x, y))*inv(g)*Area)
