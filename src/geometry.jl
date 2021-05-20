@@ -75,3 +75,9 @@ function Geometry(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<
         return Geometry(epfTM, mufTM, a1, a2, d1, d2)
     end
 end
+
+function Geometry(epf::Function, muf::Function, a1_deg::Real, a2_deg::Real, d1::Real, d2::Real, polarisation::Polarisation)
+    a1 = [cosd(a1_deg), sind(a1_deg)]
+    a2 = [cosd(a2_deg), sind(a2_deg)]
+    return Geometry(epf, muf, a1, a2, d1, d2, polarisation)
+end
