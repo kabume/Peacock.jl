@@ -77,7 +77,7 @@ function get_field(data::AbstractVector{<:Complex}, basis::PlaneWaveBasis;
     end
     return out
 end
-#TODO now only support rectangle
+
 function get_field_FDFD(data::AbstractVector{<:Complex}, basis::FDFDBasis; k0 = [0, 0])
     dx, dy = basis.resolution[1], basis.resolution[2]
     a1, a2 = basis.a1, basis.a2
@@ -96,7 +96,6 @@ end
 
 function plot_field(data::AbstractVector{<:Complex}, basis::FDFDBasis; k0 = [0, 0], cmap="coolwarm", vmin=nothing, vmax=nothing, label=nothing)
     field = get_field_FDFD(data, basis, k0 = k0)
-#    a1, a2 = Nx*dx, Ny*dy #TODO:how to modle honeycomb
     plot_field(field, basis.a1, basis.a2, cmap=cmap, vmin=vmin, vmax=vmax, label=label)
 end
 
