@@ -121,9 +121,9 @@ Plot the permittivity and permeability of the `geometry` in real space.
 """
 function PyPlot.plot(geometry::Geometry)
     # Plot permittivity
-    plot_field(geometry.ep, geometry.a1, geometry.a2, cmap="viridis", label="ϵ")
+    plot_field(geometry.ep.epsxx, geometry.a1, geometry.a2, cmap="viridis", label="ϵ")
     # Plot permeability
-    plot_field(geometry.mu, geometry.a1, geometry.a2, cmap="viridis", label="μ")
+    plot_field(geometry.mu.muxx, geometry.a1, geometry.a2, cmap="viridis", label="μ")
 end
 
 

@@ -20,7 +20,8 @@ function muf(x,y)
 end
 
 a1 = [1, 0]  # first lattice vector
-a2 = [0, 1]  # second lattice vector
+#a2 = [0, 1]  # second lattice vector
+a2 = 0.5*[sqrt(3), 1]
 
 d1 = 0.005  # resolution along first lattice vector
 d2 = 0.005  # resolution along second lattice vector
@@ -51,4 +52,4 @@ plot_band_diagram(solver_PWE, ks, TM, color="blue";
             bands=1:4, dk=0.1, frequency_scale=1/2pi)
 ylim(0,0.8)
 
-modes = Peacock.FDFD.solve(solver_FDFD, X, TM)
+modes = Peacock.FDFD.solve(solver_FDFD, X, TM, bands=1:4)
