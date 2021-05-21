@@ -5,9 +5,11 @@ th2 = 60;
 
 xc = 1/4; yc = 1/4/sqrt(3)
 #xc = -1/4; yc = 1/4/sqrt(3)
+#mu1=[0.8736 -0.6671im 0;0.6671im 0.8736 0;0 0 0.8736]
+mu1 = 1
 r = 0.2
 epf(x,y) = (x-xc)^2 + (y-yc)^2 <r^2 || (x+xc)^2 + (y+yc)^2 < r^2 ? 15 : 1
-muf(x,y) = 1
+muf(x,y) = (x-xc)^2 + (y-yc)^2 <r^2 || (x+xc)^2 + (y+yc)^2 < r^2 ? mu1 : 1
 d1, d2 = 0.01, 0.01
 
 geometry = Geometry(epf, muf, th1, th2, d1, d2)
@@ -24,8 +26,9 @@ plot_band_diagram(solver_PWE, ks, TM, color="blue"; bands=1:2, dk=0.1, frequency
 
 geometry_FDFD = Geometry(epf, muf, th1, th2, d1, d2, TM)
 solver_FDFD = Peacock.FDFD.Solver(geometry_FDFD, [2*d1, 2*d2])
-plot_band_diagram(solver_FDFD, ks, TM, color="blue", bands=1:2, dk=0.4, frequency_scale=1/2pi)
+plot_band_diagram(solver_FDFD, ks, TM, color="red", bands=1:2, dk=0.4, frequency_scale=1/2pi)
 
+#honeycomb model from Sam
 R = 1 / 3
 d = 0.4/sqrt(3)
 x = 1 / sqrt(3)
