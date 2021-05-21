@@ -64,14 +64,18 @@ muf(x,y)=1
 
 d1 = d2 = 1/500
 
+a1 = [1, 0]
+a2 = [0.5, sqrt(3)/2]
+geometry = Geometry(epf, muf, a1, a2, 1/500, 1/500, TM)
+
 geometry = Geometry(epf, muf, -60, +60, 1/500, 1/500, TM)
 
 G = BrillouinZoneCoordinate(  0,   0, "Γ")
-M = BrillouinZoneCoordinate(  0, 1/2, "M")
+M = BrillouinZoneCoordinate(  0, 1/sqrt(3), "M")
 K = BrillouinZoneCoordinate(1/3, 1/3, "K")
 
 ks = [K,G,M]
 
 solver = Peacock.FDFD.Solver(geometry, [2*d1, 2*d2])
 
-plot_band_diagram(solver, ks, TM, color="red",bands=1:4, dk=0.4, frequency_scale=1/2pi)
+plot_band_diagram(solver, ks, TM, color="red",bands=1:6, dk=0.6, frequency_scale=1/2pi)
