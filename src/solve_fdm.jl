@@ -22,7 +22,7 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
     BC = [-2 -2]
     Nx2 = size(solver.eps2.epszz)[1]
     Ny2 = size(solver.eps2.epszz)[2]
-    DEX, DEY, DHX, DHY = diff_yee2(([Nx2 Ny2]/2), [dx dy], BC, k)
+    DEX, DEY, DHX, DHY = diff_yee2(([Nx2 Ny2]/2), [dx dy], BC, solver.basis.a1, solver.basis.a2, k)
 
     if polarisation == TE
         epsxx = eps2.epsxx[2:2:Nx2, 1:2:Ny2]

@@ -53,29 +53,3 @@ plot_band_diagram(solver_PWE, ks, TM, color="blue";
 ylim(0,0.8)
 
 modes = Peacock.FDFD.solve(solver_TM, M, TM, bands=1:4)
-
-angles=[60n for n in 0:5]; ep_bg=1; ep_cyl=11.7
-
-R = 1/2.9; d = 2R/3
-
-epf(x,y) = Peacock.Zoo.wu_ep(x, y, angles, R, d, d, ep_bg, ep_cyl)
-
-muf(x,y)=1
-
-d1 = d2 = 1/500
-
-a1 = [1, 0]
-a2 = [0.5, sqrt(3)/2]
-geometry = Geometry(epf, muf, a1, a2, 1/500, 1/500, TM)
-
-geometry = Geometry(epf, muf, -60, +60, 1/500, 1/500, TM)
-
-G = BrillouinZoneCoordinate(  0,   0, "Γ")
-M = BrillouinZoneCoordinate(  0, 1/sqrt(3), "M")
-K = BrillouinZoneCoordinate(1/3, 1/3, "K")
-
-ks = [K,G,M]
-
-solver = Peacock.FDFD.Solver(geometry, [2*d1, 2*d2])
-
-plot_band_diagram(solver, ks, TM, color="red",bands=1:6, dk=0.6, frequency_scale=1/2pi)
