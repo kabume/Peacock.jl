@@ -21,7 +21,7 @@ ks = [G, M, K, G]
 solver = Peacock.FDFD.Solver(geometry, 2*[d1,d2])
 polarisation = TM
 bands = 1:2
-k = [0, 2*pi/sqrt(3)]
+k = [0.23271056693, 2*pi/sqrt(3)]
 
 
 eps2, mu2 = solver.eps2, solver.mu2
@@ -29,7 +29,7 @@ dx, dy = solver.basis.resolution[1], solver.basis.resolution[2]
 BC = [-2 -2]
 Nx2 = size(solver.eps2.epszz)[1]
 Ny2 = size(solver.eps2.epszz)[2]
-DEX, DEY, DHX, DHY = diff_yee2(([Nx2 Ny2]/2), [dx dy], BC, k)
+DEX, DEY, DHX, DHY = diff_yee2(([Nx2 Ny2]/2), [dx dy], BC, solver.basis.a1, solver.basis.a2, k)
 
 if polarisation == TE
     epsxx = eps2.epsxx[2:2:Nx2, 1:2:Ny2]
