@@ -10,6 +10,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 
 [compat]
 CUDA = "1, 2"
