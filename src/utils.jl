@@ -57,7 +57,7 @@ function diff_yee2(NGRID::Matrix{Float64}, RES::Matrix{Float64}, BC::Matrix{Int6
         end
         if BC[1]==-2
             for ny=1:NY
-                DEX[p(NX,ny,NX),p(1,ny,NX)]=exp(-im*kinc0'*a1*Lamx)/dx # periodic BC
+                DEX[p(NX,ny,NX),p(1,ny,NX)]=exp(-im*transpose(kinc0)*a1*Lamx)/dx # periodic BC
             end
 
         end
@@ -73,7 +73,7 @@ function diff_yee2(NGRID::Matrix{Float64}, RES::Matrix{Float64}, BC::Matrix{Int6
         DEY = spdiagm(0 => -1 ./dy.*ones(N), NX => 1 ./dy.*ones(N - NX)) .+ 0*im
         if BC[2]==-2
             for nx=1:NX
-                DEY[p(nx,NY,NX),p(nx,1,NX)]=exp(-im*kinc0'*a2*Lamy)/dy # periodic BC
+                DEY[p(nx,NY,NX),p(nx,1,NX)]=exp(-im*transpose(kinc0)*a2*Lamy)/dy # periodic BC
             end
         end
     end
