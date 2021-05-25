@@ -1,5 +1,5 @@
 using Peacock
-function Chern_number(solver::Peacock.FDFD.Solver, polar::Polarisation, Nkx = 4, Nky = 4, bands = 1:4)
+function Chern_number(solver::Peacock.FDFD.Solver, polar::Polarisation; Nkx = 4, Nky = 4, bands = 1:4)
     a1 = solver.basis.a1
     a2 = solver.basis.a2
     Px = 1     # lattice constant along x
