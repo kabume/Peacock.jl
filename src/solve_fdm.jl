@@ -69,7 +69,7 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
     weighting = RHS
     modes = Mode_FDFD[]
     for i in 1:length(freqs)
-        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], weight, solver.basis, label)
+        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], weighting, solver.basis, label)
         push!(modes, mode)
     end
     return modes
