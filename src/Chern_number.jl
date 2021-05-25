@@ -1,4 +1,5 @@
 using Peacock
+#TODO Chern_number(solver::Solver, polar, Nkx = 4, Nky = 4, bands = 1:4)
 function Chern_number(epf::Function, muf::Function, a1::Array{<:Real,1}, a2::Array{<:Real,1}, d1::Real, d2::Real, polar::Polarisation; Nkx = 4, Nky = 4, bands=1:4)
     Px = 1     # lattice constant along x
     Py = 1     # lattice constant along y
