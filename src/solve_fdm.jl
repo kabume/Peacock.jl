@@ -34,12 +34,14 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
         epsyx = eps2.epsyx[2:2:Nx2, 1:2:Ny2]
         epsyx = spdiagm(0 => epsyx[:])
         muzz = mu2.muzz[2:2:Nx2, 2:2:Ny2]
+        weighting = muzz[:]
         muzz = spdiagm(0 => muzz[:])
         LHS = DHX * (epsyx*DEY - epsyy*DEX) - DHY * (epsxx*DEY-epsxy*DEX)
         RHS = muzz
         label = L"H_z"
     elseif polarisation == TM
         epszz = eps2.epszz[1:2:Nx2, 1:2:Ny2]
+        weighting = epszz[:]
         epszz = spdiagm(0 => epszz[:])
         muxx = mu2.muxx[1:2:Nx2, 2:2:Ny2]
         muxx = spdiagm(0 => muxx[:])
@@ -66,7 +68,6 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
     freqs = freqs[idx][bands]
     modes_data = modes_data[:,idx][:,bands]
 
-    weighting = RHS
     modes = Mode_FDFD[]
     for i in 1:length(freqs)
         mode = Mode_FDFD(k, freqs[i], modes_data[:,i], weighting, solver.basis, label)
