@@ -16,6 +16,7 @@ struct Mode_FDFD
     k0::Vector{Float64}
     frequency::ComplexF64
     data::Vector{ComplexF64}
+    weighting::Matrix{ComplexF64}
     basis::FDFDBasis
     label::String
 end
@@ -39,10 +40,6 @@ struct HilbertSpace
         data = orthonormalise(data, weighting=weighting)
         return new(k0, data, weighting, basis)
     end
-end
-
-function get_field_FDFD()
-    #TODO
 end
 
 """

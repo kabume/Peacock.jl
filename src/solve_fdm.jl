@@ -15,7 +15,7 @@ function Solver(geometry::Geometry, resolution::Array{<:Real,1}; GPU=false)
 end
 
 
-function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacock.Polarisation; bands=:)
+function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacock.Polarisation; bands=1:5)
     
     eps2, mu2 = solver.eps2, solver.mu2
     dx, dy = solver.basis.resolution[1], solver.basis.resolution[2]
@@ -66,9 +66,10 @@ function solve(solver::Solver, k::AbstractVecOrMat{<:Real}, polarisation::Peacoc
     freqs = freqs[idx][bands]
     modes_data = modes_data[:,idx][:,bands]
 
+    weighting = RHS
     modes = Mode_FDFD[]
     for i in 1:length(freqs)
-        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], solver.basis, label)
+        mode = Mode_FDFD(k, freqs[i], modes_data[:,i], weight, solver.basis, label)
         push!(modes, mode)
     end
     return modes
