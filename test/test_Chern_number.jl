@@ -20,4 +20,6 @@ d1, d2 = 0.01, 0.01
 a1 = [1, 0]; a2 = [1/2, sqrt(3)/2]
 @time Chern_number(epf, muf, a1, a2, d1, d2, polar, Nkx = 4, Nky = 4, bands=1:3)
 
-Chern_number(solver)
+geometry = Geometry(epf, muf, a1, a2, d1, d2, polar)
+solver = Peacock.FDFD.Solver(geometry, 2*[d1, d2])
+Chern_number(solver, polar)
