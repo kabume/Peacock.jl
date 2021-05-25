@@ -1,5 +1,4 @@
 using Peacock
-#TODO Chern_number(solver::Solver, polar, Nkx = 4, Nky = 4, bands = 1:4)
 function Chern_number(solver::Peacock.FDFD.Solver, polar::Polarisation, d1 = 0.01, d2 = 0.01, Nkx = 4, Nky = 4, bands = 1:4)
     a1 = solver.basis.a1
     a2 = solver.basis.a2
