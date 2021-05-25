@@ -16,7 +16,7 @@ struct Mode_FDFD
     k0::Vector{Float64}
     frequency::ComplexF64
     data::Vector{ComplexF64}
-    weighting::Matrix{ComplexF64}
+    weighting::Vector{ComplexF64}
     basis::FDFDBasis
     label::String
 end
