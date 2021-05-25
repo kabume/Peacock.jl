@@ -19,3 +19,5 @@ muf(x,y) = (x-xc)^2 + (y-yc)^2 <r1^2 || (x+xc)^2 + (y+yc)^2 < r2^2 ? mu1 : 1
 d1, d2 = 0.01, 0.01
 a1 = [1, 0]; a2 = [1/2, sqrt(3)/2]
 @time Chern_number(epf, muf, a1, a2, d1, d2, polar, Nkx = 4, Nky = 4, bands=1:3)
+
+Chern_number(solver)
