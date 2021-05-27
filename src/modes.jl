@@ -24,7 +24,7 @@ end
 # for FDFD solver
 struct HilbertSpace_FDFD
     k0::Vector{Float64}
-    data::Vector{ComplexF64}
+    data::Matrix{ComplexF64}
     weighting::Vector{ComplexF64}
     basis::FDFDBasis
 end
