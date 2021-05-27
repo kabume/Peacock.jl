@@ -197,7 +197,7 @@ function plot_wilson_loop_winding(solver::Peacock.FDFD.Solver, ks, polarisation,
         labels = [hasproperty(x,:label) ? x.label : "" for x in ks]
     end
     ks = [typeof(x)==BrillouinZoneCoordinate ? get_k(x,solver.basis) : x for x in ks]
-    function my_solver(k)
+    function my_solve(k)
         spaces = HilbertSpace_FDFD[]
         delta_k = get_k(delta_brillouin_zone, solver.basis)
         ks_inner = [k, k+delta_k]
