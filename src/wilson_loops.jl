@@ -199,8 +199,11 @@ function plot_wilson_loop_winding(solver::Peacock.FDFD.Solver, ks, polarisation,
     ks = [typeof(x)==BrillouinZoneCoordinate ? get_k(x,solver.basis) : x for x in ks]
     function my_solver(k)
         spaces = HilbertSpace_FDFD[]
+        delta_k = get_k(delta_brillouin_zone, solver.basis)
+        ks_inner = [k, k+delta_k]
+        ks_inner, _ = sample_path(ks_inner, dk=dk_inner)
         for k in ks_inner
-            modes = Peacock.FDFD.solve(solver, k, TM, bands = 1:4)
+            modes = Peacock.FDFD.solve(solver, k, polarisation)
             space = HilbertSpace_FDFD(modes[bands])
             push!(spaces, space)
         end
