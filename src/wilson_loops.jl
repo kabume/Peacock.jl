@@ -36,6 +36,19 @@ function unitary_overlaps(a::HilbertSpace, b::HilbertSpace)
     return unitary_approx(unitary_overlaps)
 end
 
+# for FDFD solver
+function overlaps(a::HilbertSpace_FDFD, b::HilbertSpace_FDFD)
+    @assert a.weighting == b.weighting
+    LHS = a.data
+    RHS = b.weighting .* b.data
+    return [dot(LHS[:,i],RHS[:,j]) for i in 1:size(a.data,2), j in 1:size(b.data,2)]
+end
+
+function unitary_overlaps(a::HilbertSpace_FDFD, b::HilbertSpace_FDFD)
+    unitary_overlaps = overlaps(a, b)
+    return Peacock.unitary_approx(unitary_overlaps)
+end
+
 
 """
     wilson_matrix(spaces::Array{HilbertSpace,1}; closed::Bool=true)
@@ -170,6 +183,36 @@ function plot_wilson_loop_winding(solver::Solver, ks, polarisation, bands::Abstr
         angles = angle.(vals)
         angles = [angles.-2pi angles angles.+2pi]
         return angles
+    end
+    plot_band_diagram(my_solve, ks, dk=dk_outer, labels=labels, show_vlines=false, markersize=markersize)
+    ylim(-pi,pi)
+    yticks((-1:1)*pi, labels=["-π","0","+π"])
+    ylabel("Wilson spectrum")
+end
+
+function plot_wilson_loop_winding(solver::Peacock.FDFD.Solver, ks, polarisation, bands::AbstractVector{<:Int};
+    dk_outer=nothing, dk_inner=nothing, delta_brillouin_zone=BrillouinZoneCoordinate(0,1),
+    labels=[], markersize=nothing)
+    if labels == []
+        labels = [hasproperty(x,:label) ? x.label : "" for x in ks]
+    end
+    ks = [typeof(x)==BrillouinZoneCoordinate ? get_k(x,solver.basis) : x for x in ks]
+    function my_solver(k)
+        spaces = HilbertSpace_FDFD[]
+        for k in ks_inner
+            modes = Peacock.FDFD.solve(solver, k, TM, bands = 1:4)
+            space = HilbertSpace_FDFD(modes[bands])
+            push!(spaces, space)
+        end
+        spaces = [spaces; spaces[1]]
+        W = I
+        for (a, b) in zip(spaces, spaces[2:end])
+            W = W * unitary_overlaps(a, b)
+        end
+        @assert W * W' ≈ I
+        vals = eigvals(W)
+        vals = sort(vals, by=angle)
+        return angle.(vals)
     end
     plot_band_diagram(my_solve, ks, dk=dk_outer, labels=labels, show_vlines=false, markersize=markersize)
     ylim(-pi,pi)

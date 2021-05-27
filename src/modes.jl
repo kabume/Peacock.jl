@@ -21,6 +21,30 @@ struct Mode_FDFD
     label::String
 end
 
+# for FDFD solver
+struct HilbertSpace_FDFD
+    k0::Vector{Float64}
+    data::Vector{ComplexF64}
+    weighting::Vector{ComplexF64}
+    basis::FDFDBasis
+end
+
+function HilbertSpace_FDFD(modes::Array{Mode_FDFD,1})
+    k0 = modes[1].k0
+    data = zeros(ComplexF64, length(modes[1].data), length(modes))
+    weighting = modes[1].weighting
+    basis = modes[1].basis
+    for (col,mode) in enumerate(modes)
+        @assert mode.k0 == k0
+        @assert mode.weighting == weighting
+        @assert mode.basis == basis
+        data0 = get_field_FDFD(mode.data, basis, k0 = k0)
+        data0 = data0[:] / sqrt(abs(dot(data0[:], weighting.*data0[:])))
+        data[:,col] = data0[:]
+    end
+    return HilbertSpace_FDFD(k0, data, weighting, basis)
+end
+
 """
     HilbertSpace(k0, data, weighting, basis)
 
