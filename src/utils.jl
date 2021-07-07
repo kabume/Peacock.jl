@@ -1,4 +1,4 @@
-using SparseArrays
+using SparseArrays, LinearAlgebra
 """
     as_to_bs(a1, a2)
 
@@ -94,3 +94,14 @@ end
 # end
 # Base.size(A::DiagonalMatrix) = (length(A.diag), length(A.diag))
 # Base.getindex(A::DiagonalMatrix, I::Vararg{Int,2}) = I[1]==I[2] ? A.diag[I[1]] : 0
+
+eye(M) = Matrix{ComplexF64}(I, M, M)
+diag_R(mat) = mat[diagind(mat)]
+
+function mask(M)
+    mat = zeros(M,M)
+    for i = -(M-1):M-1
+        mat = mat + diagm(i=>(-1)^(i)*ones(M-abs(i)))
+    end
+    return mat
+end

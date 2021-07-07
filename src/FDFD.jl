@@ -2,7 +2,7 @@ module FDFD
 
 using Peacock
 
-include("solve_fdm.jl")
+include("solver_fdm.jl")
 export Solver, solve, FDFDBasis
 
 end

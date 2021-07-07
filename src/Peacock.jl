@@ -1,11 +1,12 @@
 module Peacock
 
+using LinearAlgebra: include
 using PyPlot
 using LinearAlgebra, FFTW
 using CUDA
 
 include("utils.jl")
-export diff_yee2
+export diff_yee2, eye, diag_R, mask
 
 include("geometry.jl")
 export Geometry, Mu, Eps, MaterialTensor, TE, TM, Polarisation
@@ -35,5 +36,8 @@ include("Zoo.jl")
 
 include("Chern_number.jl")
 export Chern_number
+
+include("solver_EPEW.jl")
+export solver_EPEW, abcd
 
 end # module
