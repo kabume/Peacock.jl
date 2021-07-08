@@ -1,5 +1,6 @@
 module Peacock
 
+using Base: Number
 using LinearAlgebra: include
 using PyPlot
 using LinearAlgebra, FFTW

@@ -1,4 +1,4 @@
-function solver_EPEW(solver::Solver, ky, omega, polarisation::Polarisation)
+function solver_EPEW(solver::Solver, ky::Number, omega::Number, polarisation::Polarisation)
     epc = solver.epc.*mask(size(solver.epc)[1]) 
     muc = solver.muc.*mask(size(solver.muc)[1])
     global K = hcat(diag_R(solver.Ky),diag_R(solver.Kx))/2/pi
@@ -51,7 +51,7 @@ function solver_EPEW(solver::Solver, ky, omega, polarisation::Polarisation)
     return kT, dT, VT
 end
 
-function abcd(kT,dT,VT,omega,ky;background=1)
+function abcd(kT::VecOrMat,dT::VecOrMat,VT::VecOrMat,omega::Number,ky::Number;background=1)
     M = size(VT)[1]
     m = Int((sqrt(M)-1)/2)
     Ky=Int(round(ky))
