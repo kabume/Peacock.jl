@@ -19,54 +19,65 @@ grid()
 omega0 = 0.005:0.005:1
 ky = 0
 ii = 1
-RT = zeros(length(omega0))
-TT = zeros(length(omega0))
+RT = zeros(ComplexF64, length(omega0))
+TT = zeros(ComplexF64, length(omega0))
 for omega in omega0
     kT, dT, VT = solver_EPEW(solver, ky, omega, p)
     RT[ii], TT[ii] = abcd(kT, dT, VT, omega, ky)
     ii = ii + 1
 end
 figure();plot(omega0,abs.(RT))
+#plot(omega0, real((1 .+ RT)./(1 .- RT)))
 xlabel("ω(2πc/a)")
-ylabel("|r|")
+ylabel("R")
+#ylim([-20,20])
 grid()
 
-kym = (-1:0.1:1)*0.5
-omega = 0.4
-kTD = []
-kTDi = []
-kTA = []
-for ky in kym
-    kT, dT, VT = solver_EPEW(solver, ky, omega, p)
-	buffer=kT
-    i1 = abs.(imag.(buffer)) .< 1e-5
-    buffer1=real.(buffer)
-    buffer1[.!i1] .= NaN
-    if length(buffer1) < length(kT)
-        buffer1[length(buffer1)+1:lenm] .= NaN
+function print_k(omega0)
+    for omega = omega0
+    kym = (-1:0.05:1)*0.5
+    kTD = []
+    kTDi = []
+    kTA = []
+    for ky in kym
+        kT, dT, VT = solver_EPEW(solver, ky, omega, p)
+        buffer=kT
+        i1 = abs.(imag.(buffer)) .< 1e-5
+        buffer1=real.(buffer)
+        buffer1[.!i1] .= NaN
+        if length(buffer1) < length(kT)
+            buffer1[length(buffer1)+1:lenm] .= NaN
+        end
+        kTD = [kTD; buffer1[:]]
+        buffer[i1] .= NaN
+        if length(buffer) < length(kT)
+            buffer[length(buffer)+1:lenm] .= NaN
+        end
+        kTDi = [kTDi; buffer[:]]
+        kTA = [kTA; kT[:]]
     end
-	kTD = [kTD; buffer1[:]]
-    buffer[i1] .= NaN
-    if length(buffer) < length(kT)
-        buffer[length(buffer)+1:lenm] .= NaN
+    kTD = reshape(kTD,Int(length(kTD)/length(kym)),length(kym))
+    kTDi = reshape(kTDi,Int(length(kTDi)/length(kym)),length(kym))
+    kTA = reshape(kTA,Int(length(kTA)/length(kym)),length(kym))
+    kTD = transpose(kTD)
+    kTDi = transpose(kTDi)
+    kTA = transpose(kTA)
+    M = size(kTD)[2]
+    figure()
+    plot(kTD[:],(kym*ones(1,M))[:],"r.")
+    plot(imag(kTDi[:]),(kym*ones(1,M))[:],"b.")
+    xlabel(L"k_x(2\pi/a)")
+    ylabel(L"k_y(2\pi/a)")
+    title("ω=$omega(2πc/a)")
+    legend([L"Re(k_{x})",L"Im(k_x)"])
+    grid()
+    xlim([-0.6,0.6])
+    ylim([-0.6,0.6])
+    axhline(0.5,xmin=0.1/1.2,xmax=1.1/1.2,ls="-",color="black",linewidth=0.5)
+    axhline(-0.5,xmin=0.1/1.2,xmax=1.1/1.2,ls="-",color="black",linewidth=0.5)
+    axvline(0.5,ymin=0.1/1.2,ymax=1.1/1.2,ls="-",color="black",linewidth=0.5)
+    axvline(-0.5,ymin=0.1/1.2,ymax=1.1/1.2,ls="-",color="black",linewidth=0.5)
+    savefig("r_0p2_eps_9_omega_$omega.svg")
+    close()
     end
-	kTDi = [kTDi; buffer[:]]
-	kTA = [kTA; kT[:]]
 end
-kTD = reshape(kTD,Int(length(kTD)/length(kym)),length(kym))
-kTDi = reshape(kTDi,Int(length(kTDi)/length(kym)),length(kym))
-kTA = reshape(kTA,Int(length(kTA)/length(kym)),length(kym))
-kTD = transpose(kTD)
-kTDi = transpose(kTDi)
-kTA = transpose(kTA)
-figure()
-plot(kTD[:],(kym*ones(1,2*(2m+1)))[:],"r.")
-plot(imag(kTDi[:]),(kym*ones(1,2*(2m+1)))[:],"b.")
-xlabel(L"k_x(2\pi/a)")
-ylabel(L"k_y(2\pi/a)")
-title("ω=$omega(2πc/a)")
-legend([L"Re(k_{x})",L"Im(k_x)"])
-grid()
-xlim([-1,1])
-#savefig("r_0p3_eps_9_omega_$omega.svg")
-#close()
