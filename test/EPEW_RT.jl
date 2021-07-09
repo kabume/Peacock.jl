@@ -1,22 +1,22 @@
 using Peacock
 using PyPlot 
 p = TM
-r = 0.15
-epf(x, y) = x^2 + y^2 < r^2 ? 11.43 : 1
+r = 0.2
+epf(x, y) = x^2 + y^2 < r^2 ? 9 : 1
 muf(x,y) = 1
 a1 = [1, 0]; a2 = [0, 1]
-d1 = 0.01; d2 = 0.01
+d1 = 0.001; d2 = 0.001
 geometry = Geometry(epf, muf, a1, a2, d1, d2)
-solver = Solver(geometry, 11, 11)
+solver = Solver(geometry, 15, 15)
 
 G = BrillouinZoneCoordinate(  0,   0, "Γ")
 X = BrillouinZoneCoordinate(1/2,   0, "X")
 M = BrillouinZoneCoordinate(1/2, 1/2, "M")
 ks = [G,X,M,G]
-figure(); plot_band_diagram(solver, ks, p, bands=1:3, frequency_scale=1/2pi)
+figure(); plot_band_diagram(solver, ks, p, bands=1:7, frequency_scale=1/2pi)
 grid()
 
-omega0 = 0.1:0.01:0.5
+omega0 = 0.005:0.005:1
 ky = 0
 ii = 1
 RT = zeros(length(omega0))
@@ -26,7 +26,7 @@ for omega in omega0
     RT[ii], TT[ii] = abcd(kT, dT, VT, omega, ky)
     ii = ii + 1
 end
-figure();plot(omega0,RT)
+figure();plot(omega0,abs.(RT))
 xlabel("ω(2πc/a)")
 ylabel("|r|")
 grid()

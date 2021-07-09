@@ -91,6 +91,6 @@ function abcd(kT::VecOrMat,dT::VecOrMat,VT::VecOrMat,omega::Number,ky::Number;ba
         TT=tT[i0]'*diagm(dT[1:2m+1][i0])*tT[i0]/kxi*omega;
     end
 
-    RT = abs(RT); TT = abs(TT)
+#    RT = abs(RT); TT = abs(TT)
     return RT, TT
 end
