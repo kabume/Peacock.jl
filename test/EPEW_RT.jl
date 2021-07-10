@@ -1,13 +1,13 @@
 using Peacock
 using PyPlot 
-p = TM
+p = TE
 r = 0.2
 epf(x, y) = x^2 + y^2 < r^2 ? 9 : 1
 muf(x,y) = 1
 a1 = [1, 0]; a2 = [0, 1]
 d1 = 0.001; d2 = 0.001
 geometry = Geometry(epf, muf, a1, a2, d1, d2)
-solver = Solver(geometry, 15, 15)
+solver = Solver(geometry, 7, 7)
 
 G = BrillouinZoneCoordinate(  0,   0, "Γ")
 X = BrillouinZoneCoordinate(1/2,   0, "X")
@@ -82,27 +82,31 @@ function print_k(omega0)
     end
 end
 
-
 function psi0(x, y, kin, kr, kt, V, r, t)
     psir = []
     for x0 in x
         buf = []
         if x0 <= 0
             for y0 in y
-                buf = [buf; exp(im*(kin[1]*x0+kin[2]*y0))+exp(im*(kr[:,1]*x0+kr[:,2]*y0)).'*r] 
+                buf = [buf; exp.(im*(kin[1]*x0+kin[2]*y0)) .+ transpose(exp.(im*(kr[:,1]*x0+kr[:,2]*y0)))*r] 
             end
         else
             for y0 = y
-                buf = [buf; exp(im*(K[:,1]*x0+K[:,2]*y0)).'*V*diagm(exp(im*(kt*x0+kin[2]*y0)))*t]
+                buf = [buf; transpose(exp.(im*(K[:,1]*x0 .+ K[:,2]*y0)))*V*diagm(exp.(im*(kt*x0 .+ kin[2]*y0)))*t]
             end
         end
-        psir=[psir buf]
+        psir=[psir; buf]
     end
+    return psir
 end
 
+K = hcat(diag_R(solver.Ky),diag_R(solver.Kx))/2/pi
+omega = 0.6; ky0 = 0.5; dky = 0.08; N = 7; 
+x = -50:0.5:50; y = -50:0.5:50; p = TE
+
 function incident(omega, ky0, dky, N, x, y, p)
-theta0=asin(ky0/omega)
-if abs(ky0+dky) >= omega
+theta0=asin(Complex(ky0/omega))
+if abs(ky0+dky) >= omega 
     dky = sign(ky0+dky)*omega
 else
     dky = ky0+dky
@@ -113,21 +117,22 @@ k = omega.*[cos.(theta) sin.(theta)]            #The incident wave's k
 weight = abs.(abs.(-N:N) .- N .- 1 .- eps()) ./ (N+1+eps())    #The weight of per incident wave
 
 psir=zeros(ComplexF64, length(y),length(x))
-m=7
+m=3
 ii = 1
-for ky = k[:,2]
+for ky = k[:,2]'
+    ky = Float64.(ky)
      #Solve the TE and TM Mode
     kT, dT, VT = solver_EPEW(solver, ky, omega, p)
-    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky)
-    kr=[-sqrt.(Complex.((omega^2 .- ((-7:7) .+ ky).^2))) ((-7:7) .+ ky)]
-    psir = psir+psi0(x, y, k[ii,:], kr, kT[1:(2*m+1)], VT[:,1:(2*m+1)], rT, tT)*weight[ii]
-
+    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky, background=solver.epc.*mask(size(solver.epc)[1]))
+    kr=[-sqrt.(Complex.(omega^2 .- ((-m:m) .+ ky).^2)) ((-m:m) .+ ky)]
+    temp = psi0(x, y, k[ii,:], kr, kT[1:(2*m+1)], VT[:,1:(2*m+1)], rT, tT)
+    psir = psir .+ reshape(temp, length(y), length(x)) .* weight[ii]
     ii = ii + 1
 end
-
+ 
 x0 = repeat(x, 1, length(y)); x0 = transpose(x0)
 y0 = repeat(y, 1, length(x))
 figure()
-imshow(x0, y0, abs.(psir).^2)
+pcolor(x0,y0,abs.(psir).^2,cmap="hsv")
 #pcolor(x0,y0,abs(psir).^2);line([0 0],[y(1) y(length(y))]);
 end

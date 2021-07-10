@@ -1,4 +1,4 @@
-function solver_EPEW(solver::Solver, ky::Number, omega::Number, polarisation::Polarisation)
+function solver_EPEW(solver::Solver, ky::Number, omega::Number, polarisation::Polarisation; Norm=false)
     epc = solver.epc.*mask(size(solver.epc)[1]) 
     muc = solver.muc.*mask(size(solver.muc)[1])
     global K = hcat(diag_R(solver.Ky),diag_R(solver.Kx))/2/pi
@@ -23,9 +23,11 @@ function solver_EPEW(solver::Solver, ky::Number, omega::Number, polarisation::Po
     kT, VT = eigen(LHS,sortby=x -> -abs(x))
     VT = VT[1:M, :]
     # Normalization
+    if Norm == true
     VT = VT * diagm(vec(1 ./sqrt.(sum(abs.(VT).^2,dims=1))))
     maxVT,idVT=findmax(abs.(VT), dims=1)
     VT=VT*diagm(vec(maxVT./VT[idVT]))
+    end
     #direction
     dT=1/omega*diag_R(VT'*inv(RHS)*(diagm(K[:,1])*VT+VT*diagm(kT)))
 
