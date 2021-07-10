@@ -23,7 +23,7 @@ RT = zeros(ComplexF64, length(omega0))
 TT = zeros(ComplexF64, length(omega0))
 for omega in omega0
     kT, dT, VT = solver_EPEW(solver, ky, omega, p)
-    RT[ii], TT[ii] = abcd(kT, dT, VT, omega, ky)
+    RT[ii], TT[ii], _, _ = abcd(kT, dT, VT, omega, ky)
     ii = ii + 1
 end
 figure();plot(omega0,abs.(RT))
@@ -80,4 +80,54 @@ function print_k(omega0)
     savefig("r_0p2_eps_9_omega_$omega.svg")
     close()
     end
+end
+
+
+function psi0(x, y, kin, kr, kt, V, r, t)
+    psir = []
+    for x0 in x
+        buf = []
+        if x0 <= 0
+            for y0 in y
+                buf = [buf; exp(im*(kin[1]*x0+kin[2]*y0))+exp(im*(kr[:,1]*x0+kr[:,2]*y0)).'*r] 
+            end
+        else
+            for y0 = y
+                buf = [buf; exp(im*(K[:,1]*x0+K[:,2]*y0)).'*V*diagm(exp(im*(kt*x0+kin[2]*y0)))*t]
+            end
+        end
+        psir=[psir buf]
+    end
+end
+
+function incident(omega, ky0, dky, N, x, y, p)
+theta0=asin(ky0/omega)
+if abs(ky0+dky) >= omega
+    dky = sign(ky0+dky)*omega
+else
+    dky = ky0+dky
+end
+theta1 = asin(dky/omega)
+theta = theta1 .+ (0:2*N) ./ (N+eps()) .* (theta0-theta1)
+k = omega.*[cos.(theta) sin.(theta)]            #The incident wave's k
+weight = abs.(abs.(-N:N) .- N .- 1 .- eps()) ./ (N+1+eps())    #The weight of per incident wave
+
+psir=zeros(ComplexF64, length(y),length(x))
+m=7
+ii = 1
+for ky = k[:,2]
+     #Solve the TE and TM Mode
+    kT, dT, VT = solver_EPEW(solver, ky, omega, p)
+    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky)
+    kr=[-sqrt.(Complex.((omega^2 .- ((-7:7) .+ ky).^2))) ((-7:7) .+ ky)]
+    psir = psir+psi0(x, y, k[ii,:], kr, kT[1:(2*m+1)], VT[:,1:(2*m+1)], rT, tT)*weight[ii]
+
+    ii = ii + 1
+end
+
+x0 = repeat(x, 1, length(y)); x0 = transpose(x0)
+y0 = repeat(y, 1, length(x))
+figure()
+imshow(x0, y0, abs.(psir).^2)
+#pcolor(x0,y0,abs(psir).^2);line([0 0],[y(1) y(length(y))]);
 end

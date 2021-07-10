@@ -92,5 +92,5 @@ function abcd(kT::VecOrMat,dT::VecOrMat,VT::VecOrMat,omega::Number,ky::Number;ba
     end
 
 #    RT = abs(RT); TT = abs(TT)
-    return RT, TT
+    return RT, TT, rT, tT
 end
