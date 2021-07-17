@@ -38,7 +38,7 @@ include("Zoo.jl")
 include("Chern_number.jl")
 export Chern_number
 
-include("solver_EPEW.jl")
-export solver_EPEW, abcd
+include("solver_EPWE.jl")
+export solver_EPWE, abcd
 
 end # module

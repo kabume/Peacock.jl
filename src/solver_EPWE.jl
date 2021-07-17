@@ -1,4 +1,4 @@
-function solver_EPEW(solver::Solver, ky::Number, omega::Number, polarisation::Polarisation; Norm=false)
+function solver_EPWE(solver::Solver, ky::Number, omega::Number, polarisation::Polarisation; Norm=false)
     epc = solver.epc.*mask(size(solver.epc)[1]) 
     muc = solver.muc.*mask(size(solver.muc)[1])
     global K = hcat(diag_R(solver.Ky),diag_R(solver.Kx))/2/pi
