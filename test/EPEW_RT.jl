@@ -1,13 +1,14 @@
 using Peacock
-using PyPlot 
-p = TE
+using PyPlot, LinearAlgebra
+p = TM
 r = 0.2
+cutoff = 11
 epf(x, y) = x^2 + y^2 < r^2 ? 9 : 1
 muf(x,y) = 1
 a1 = [1, 0]; a2 = [0, 1]
-d1 = 0.001; d2 = 0.001
+d1 = 0.01*100/121; d2 = 0.01*100/121
 geometry = Geometry(epf, muf, a1, a2, d1, d2)
-solver = Solver(geometry, 7, 7)
+solver = Solver(geometry, cutoff, cutoff)
 
 G = BrillouinZoneCoordinate(  0,   0, "Γ")
 X = BrillouinZoneCoordinate(1/2,   0, "X")
@@ -16,7 +17,8 @@ ks = [G,X,M,G]
 figure(); plot_band_diagram(solver, ks, p, bands=1:7, frequency_scale=1/2pi)
 grid()
 
-omega0 = 0.005:0.005:1
+#compute transmission and reflection
+omega0 = 0.1:0.005:1
 ky = 0
 ii = 1
 RT = zeros(ComplexF64, length(omega0))
@@ -26,13 +28,14 @@ for omega in omega0
     RT[ii], TT[ii], _, _ = abcd(kT, dT, VT, omega, ky)
     ii = ii + 1
 end
-figure();plot(omega0,abs.(RT))
+figure();plot(omega0,log10.(abs.(RT)))
 #plot(omega0, real((1 .+ RT)./(1 .- RT)))
 xlabel("ω(2πc/a)")
 ylabel("R")
 #ylim([-20,20])
 grid()
 
+# compute complex Bloch wavevector with a fixed frequency
 function print_k(omega0)
     for omega = omega0
     kym = (-1:0.05:1)*0.5
@@ -82,6 +85,7 @@ function print_k(omega0)
     end
 end
 
+# draw the field and try to compute Wilson loop
 function psi0(x, y, kin, kr, kt, V, r, t)
     psir = []
     for x0 in x
@@ -92,19 +96,22 @@ function psi0(x, y, kin, kr, kt, V, r, t)
             end
         else
             for y0 = y
-                buf = [buf; transpose(exp.(im*(K[:,1]*x0 .+ K[:,2]*y0)))*V*diagm(exp.(im*(kt*x0 .+ kin[2]*y0)))*t]
+#                buf = [buf; transpose(exp.(im*(K[:,1]*x0 .+ K[:,2]*y0)))*V*diagm(exp.(im*(kt*x0 .+ kin[2]*y0)))*t]
+                buf = [buf; transpose(exp.(im*(K[:,1]*x0 .+ K[:,2]*y0)))*V*t] #u function
             end
         end
         psir=[psir; buf]
     end
     return psir
 end
-
 K = hcat(diag_R(solver.Ky),diag_R(solver.Kx))/2/pi
-omega = 0.6; ky0 = 0.5; dky = 0.08; N = 7; 
-x = -50:0.5:50; y = -50:0.5:50; p = TE
 
-function incident(omega, ky0, dky, N, x, y, p)
+P=zeros(ComplexF64,1465,30)
+jj = 1
+omega = 0.78214949
+ky0 = 0; dky = 0.0; N = 0; 
+x = 0:0.05:6; y = 0:0.05:6; 
+
 theta0=asin(Complex(ky0/omega))
 if abs(ky0+dky) >= omega 
     dky = sign(ky0+dky)*omega
@@ -117,22 +124,36 @@ k = omega.*[cos.(theta) sin.(theta)]            #The incident wave's k
 weight = abs.(abs.(-N:N) .- N .- 1 .- eps()) ./ (N+1+eps())    #The weight of per incident wave
 
 psir=zeros(ComplexF64, length(y),length(x))
-m=3
+m=Int((cutoff-1)/2)
 ii = 1
 for ky = k[:,2]'
     ky = Float64.(ky)
      #Solve the TE and TM Mode
-    kT, dT, VT = solver_EPEW(solver, ky, omega, p)
-    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky, background=solver.epc.*mask(size(solver.epc)[1]))
+    kT, dT, VT = solver_EPEW(solver, ky, omega, p, Norm=false)
+#    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky, background=solver.epc.*mask(size(solver.epc)[1]))
+    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky)
     kr=[-sqrt.(Complex.(omega^2 .- ((-m:m) .+ ky).^2)) ((-m:m) .+ ky)]
     temp = psi0(x, y, k[ii,:], kr, kT[1:(2*m+1)], VT[:,1:(2*m+1)], rT, tT)
     psir = psir .+ reshape(temp, length(y), length(x)) .* weight[ii]
     ii = ii + 1
 end
- 
+#P[:,jj] = psir[1:10:end]
+#交叠积分结果显示 angle(psir_0p782'*psir_0p783)=2.87 angle(psir_0p781'*psir_0p782)=0.169
+#jj = jj + 1
+#end 
+
 x0 = repeat(x, 1, length(y)); x0 = transpose(x0)
 y0 = repeat(y, 1, length(x))
+#pcolor(x0,y0,abs.(psir).^2,cmap="hsv")
+#画的是E而不是u
 figure()
-pcolor(x0,y0,abs.(psir).^2,cmap="hsv")
+subplot(1,2,1);pcolor(x0,y0,imag.(psir), cmap="coolwarm"); title("imag,ω=$omega(2πc/a)"); colorbar()
+subplot(1,2,2);pcolor(x0,y0,real.(psir), cmap="coolwarm"); title("real,ω=$omega(2πc/a)"); colorbar()
 #pcolor(x0,y0,abs(psir).^2);line([0 0],[y(1) y(length(y))]);
+
+W = zeros(ComplexF64,29)
+for ii = 1:29
+    #W[ii] = (P[:,ii] .*geometry.ep.epsxx[1:10:end])'*P[:,ii+1]
+    W[ii] = P[:,ii]'*P[:,ii+1]
 end
+sum(angle.(W))
