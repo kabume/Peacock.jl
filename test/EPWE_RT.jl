@@ -24,7 +24,7 @@ ii = 1
 RT = zeros(ComplexF64, length(omega0))
 TT = zeros(ComplexF64, length(omega0))
 for omega in omega0
-    kT, dT, VT = solver_EPEW(solver, ky, omega, p)
+    kT, dT, VT = solver_EPWE(solver, ky, omega, p)
     RT[ii], TT[ii], _, _ = abcd(kT, dT, VT, omega, ky)
     ii = ii + 1
 end
@@ -44,7 +44,7 @@ function print_k(omega0)
     kTA = []
     kTDri = []
     for ky in kym
-        kT, dT, VT = solver_EPEW(solver, ky, omega, p)
+        kT, dT, VT = solver_EPWE(solver, ky, omega, p)
         buffer=copy(kT)
         i1 = abs.(imag.(buffer)) .< 1e-6 #判断是否为纯实数
         #i2 = Bool.(abs.(real.(buffer)) .< 1e-6) .& Bool.(abs.(real.(buffer) .+ 0.5) .< 1e-6) .& Bool.(abs.(real.(buffer) .- 0.5) .< 1e-6)#判断是否为纯虚数
@@ -155,7 +155,7 @@ ii = 1
 for ky = k[:,2]'
     ky = Float64.(ky)
      #Solve the TE and TM Mode
-    kT, dT, VT = solver_EPEW(solver, ky, omega, p, Norm=false)
+    kT, dT, VT = solver_EPWE(solver, ky, omega, p, Norm=false)
 #    RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky, background=solver.epc.*mask(size(solver.epc)[1]))
     RT, TT, rT, tT = abcd(kT, dT, VT, omega, ky)
     kr=[-sqrt.(Complex.(omega^2 .- ((-m:m) .+ ky).^2)) ((-m:m) .+ ky)]

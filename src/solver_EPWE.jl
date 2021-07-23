@@ -65,7 +65,7 @@ function abcd(kT::VecOrMat,dT::VecOrMat,VT::VecOrMat,omega::Number,ky::Number;ba
 
     ep = background
     abcd1=[-eye(2*m+1) msum*VT[:,1:(2*m+1)]; diagm(sqrt.(Complex.(omega^2 .- ((-m:m) .+ky).^2))) msum*(inv(ep)*(diagm(K[:,1])*VT[:,1:(2*m+1)]+VT[:,1:(2*m+1)]*diagm(kT[1:(2*m+1)])))]
-    input = zeros(4*m+2) 
+    input = zeros(ComplexF64, 4*m+2) 
     input[Ky+m+1] = 1
     input[Ky+3*m+2] = sqrt(Complex(omega^2-(ky+Ky)^2))
     output=abcd1\input
