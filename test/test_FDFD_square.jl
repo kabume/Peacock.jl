@@ -3,11 +3,15 @@ using PyPlot
 #using Peacock.FDFD
 
 # Permittivity
+mu1 = [14 12.4im 0; -12.4im 14 0; 0 0 1]
 function epf(x,y)
+    d = 1/2.8
+    r0 = 0.12
     # equation of a circle with radius 0.2a
-    if x^2+y^2 <= 0.2^2
+    if (x - d)^2 + (y - d)^2 < r0^2 || (x - d)^2 + (y + d)^2 < r0^2 || (x + d)^2 + (y - d)^2 < r0^2 || (x + d)^2 + (y + d)^2 < r0^2
+        #    if x^2+y^2 < r0^2
         # dielectric inside the circle
-        return 8.9
+        return 15
     else
         # air outside the circle
         return 1
@@ -16,7 +20,16 @@ end
 
 # Permeability is unity everywhere
 function muf(x,y)
-    return 1
+    d = 1/2.8
+    r0 = 0.12
+    # equation of a circle with radius 0.2a
+    if (x - d)^2 + (y - d)^2 < r0^2 || (x - d)^2 + (y + d)^2 < r0^2 || (x + d)^2 + (y - d)^2 < r0^2 || (x + d)^2 + (y + d)^2 < r0^2
+        # dielectric inside the circle
+        return mu1
+    else
+        # air outside the circle
+        return 1
+    end
 end
 
 a1 = [1, 0]  # first lattice vector
