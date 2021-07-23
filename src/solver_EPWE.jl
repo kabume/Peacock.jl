@@ -74,7 +74,7 @@ function abcd(kT::VecOrMat,dT::VecOrMat,VT::VecOrMat,omega::Number,ky::Number;ba
 
     kxi = sqrt(Complex(omega^2 - ky^2))
     if kxi==0
-        kxi=eps
+        kxi=eps()
     end
     kxr=sqrt.(Complex.(omega^2 .- (ky - round(ky) .+ (-m:m)).^2))
 
