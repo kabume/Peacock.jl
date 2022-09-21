@@ -4,7 +4,7 @@ using Base: Number
 using LinearAlgebra: include
 using PyPlot
 using LinearAlgebra, FFTW
-using CUDA
+#using CUDA
 
 include("utils.jl")
 export diff_yee2, eye, diag_R, mask
