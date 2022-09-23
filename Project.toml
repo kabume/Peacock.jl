@@ -4,7 +4,7 @@ authors = ["S J Palmer <samuelpalmer94@gmail.com>"]
 version = "0.1.2"
 
 [deps]
-CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+#CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
 FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
@@ -13,7 +13,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 
 [compat]
-CUDA = "1, 2"
+#CUDA = "1, 2"
 FFTW = "1.2"
 PyPlot = "2"
 julia = "1.3"
